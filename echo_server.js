@@ -16,10 +16,10 @@ server.on('connection', (client) => {
 
     client.on('data', (data) => {
         console.log(data.toString());
-      client.write('Hello, from the echo server!\n\n')
-      client.write(data)
-      client.end()
-      client.on('end', () => {
+        client.write('Hello, from the echo server!\n\n')
+        client.write(data)
+        client.end()
+        client.on('end', () => {
         console.log('Socket connection ended')
       })
       client.on('error', (err) => {
