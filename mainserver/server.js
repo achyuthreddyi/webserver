@@ -15,7 +15,7 @@ server.on('connection',(client) =>{
         // console.log(data.toString());
         console.log("***********************************************************");
         const headers = parseHeaders(data)
-        console.log(headers);
+        
         //try to return which element 
         const res = servestaticfiles(headers)
         console.log('response' , res );
@@ -32,8 +32,8 @@ function parseHeaders(data) {
     headers['method-path-protocol'] = data[0]
     // data = data.slice(1)
     data.shift()
-    console.log('data after splicing !!');
-    console.log(data);
+    // console.log('data after splicing !!');
+    // console.log(data);
     // form a new key value pairs basically objects!!
     for(let item of data) {
         if(item.indexOf(':') !== -1 && item.length !== 0) {
