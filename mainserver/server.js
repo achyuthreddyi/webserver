@@ -18,9 +18,11 @@ server.on('connection',(client) =>{
         
         //try to return which element 
         const res = servestaticfiles(headers)
-        console.log('response' , res );
-        client.write(res)
-        client.end()
+        // console.log('response' , res );
+        client.write(res, () =>{
+            client.end()
+        })
+      
     })
 })
 

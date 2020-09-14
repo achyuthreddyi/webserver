@@ -1,15 +1,50 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="./index.css">
-
+    <link rel="stylesheet" href="./index2.css">
     <title>index-page-of-staticfiles</title>
 </head>
 <body>
     <h1>Achyuth Reddy !! You are great man!!!</h1>
     <button id="clickbutton">Click me !!!</button>
     <script src="./index.js"></script>        
+</body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=MuseoModerno:wght@100;200;300&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css" />
+    <!-- <link rel="stylesheet" href="style.css"> -->
+    <link rel="stylesheet" href="index.css">
+    <title>todo App </title>
+</head>
+<body>
+    <header>
+        <h1> todo list </h1>
+ 
+    </header>
+    <form >
+        <input type="text" class  = "todo-input">
+        <button class = "todo-button" type  ="submit">  <i class="fas fa-plus-square"></i> </button>
+        <select name="todos" class="filter-todo">
+            <option value="all ">all</option>
+            <option value="completed">completed</option>
+            <option value="uncompleted">Uncompleted</option>
+        </select>
+
+    </form>
+    <div class="todo-container">
+        <ul class="todo-list"></ul>
+    </div>
+
+    <script src="index.js"></script>
 </body>
 </html>
