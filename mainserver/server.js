@@ -6,22 +6,24 @@ const servestaticfiles = require('./fileserve')
 let headers = {}
 
 server.listen(8080,() =>{
-    'server is running at port 8080'
+    'server is running at port 8081'
 })
 
 server.on('connection',(client) =>{
-    // console.log(client);
+    // console.log("CLIENT ON CONNECTION !!!!",client);
     client.on('data', (data) =>{
         // console.log(data.toString());
-        console.log("***********************************************************");
+        // console.log("***********************************************************");
         const headers = parseHeaders(data)
+        console.log('******HEADERS******',headers);
         
         //try to return which element 
         const res = servestaticfiles(headers)
         // console.log('response' , res );
-        client.write(res, () =>{
-            client.end()
-        })
+        client.write(res
+            // , () =>{
+            // client.end()}
+            )
       
     })
 })
