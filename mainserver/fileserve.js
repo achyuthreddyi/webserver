@@ -29,11 +29,15 @@ const servestaticfiles =  (headers, ) =>{
             res += bodycss
             return res       
         default: 
-            const defaultFile  =  fs.readFileSync('./staticfiles/index.js')
+        try
+            {const defaultFile  =  fs.readFileSync(`./staticfiles/${path}`)
             console.log('###### ' , defaultFile );
             res += `Content-Length: ${defaultFile.length}\r\n\r\n`
             res += defaultFile       
-            return res                           
+            return res  } 
+        catch{
+            console.log(`${path}`);
+        }                       
     } 
   
 
