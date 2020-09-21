@@ -16,8 +16,23 @@ const servestaticfiles =  (headers, ) =>{
     // return res
     switch (type_of_doc){
         case 'text/html,':
-            const body =  fs.readFileSync('./staticfiles/index.html')
-            // console.log('body here!!',res);
+            let body
+            if (path === '/'){
+                try {
+                    body =  fs.readFileSync('./staticfiles/index.html')                    
+                } catch (error) {
+                    body = fs.readFileSync(`./staticfiles/404.html`);                    
+                }
+                
+            }
+            else{
+                try {
+                    body =  fs.readFileSync(`./staticfiles/${path}`)                    
+                } catch (error) {
+                    body = fs.readFileSync(`./staticfiles/404.html`)                    
+                }
+                
+            }
             res += `Content-Length: ${body.toString().length}\r\n\r\n`
             res += body
             return res           
