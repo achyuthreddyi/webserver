@@ -15,15 +15,17 @@ server.on('connection',(client) =>{
         // console.log(data.toString());
         // console.log("***********************************************************");
         const headers = parseHeaders(data)
-        console.log('******HEADERS******',headers);
+        // console.log('******HEADERS******',headers);
         
         //try to return which element 
         const res = servestaticfiles(headers)
-        // console.log('response' , res );
-        client.write(res
+        console.log('response' , res );
+        client.write(res)
+        client.end()
+
             // , () =>{
             // client.end()}
-            )
+            // )
       
     })
 })
