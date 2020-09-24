@@ -17,7 +17,8 @@ function createServer(PORT){
         client.on('error', (err) =>{  
             console.log(err);
             console.log('error in connection !!!' );
-            client.write(`HTTP/1.1 500 server internal error`)
+            client.write(sendErrorStatus(500))
+            // client.write(`HTTP/1.1 500 server internal error`)
             client.close()        
         })
         client.on('data',(data) =>{
@@ -48,7 +49,7 @@ function parseRequest (data){
 
     let method_path_protocol = headerData[0].split(' ')
     if(method_path_protocol.length >3){
-        let err_response = 'HTTP/1.1 400 Bad Request'
+        let err_response = sendErrorStatus(400)
         return err_response
     }
 
@@ -64,8 +65,9 @@ function parseRequest (data){
         if(item.includes(':')){
             let headerKey = item.slice(0, item.indexOf(':'))
             if(headerKey.includes(' ')){
-                let err_response = 'HTTP/1.1 400 Bad Request'
-                return err_response
+                // let err_response = 'HTTP/1.1 400 Bad Request'
+                return sendErrorStatus(400)
+                // return err_response
                 // return 
             }else{
                 headers[item.slice(0,item.indexOf(':'))] = item.slice(item.indexOf(':') + 2)
@@ -75,15 +77,29 @@ function parseRequest (data){
     request.headers = headers
 
     if(headers.method !== 'GET' && headers.method !== 'POST') {
-        let err_response = 'HTTP/1.1 501 Not Implemented'
+        let err_response = sendErrorStatus(500)
         return err_response
       }
       if(headers.method === 'POST' && headers['Content-Length'] === undefined) {
-        let err_response = 'HTTP/1.1 400 Bad Request'
+        let err_response = sendErrorStatus(400)
         return err_response
       }
     request.body = bodyData
     return request 
+}
+
+function sendErrorStatus(statusCode){
+    const httpstatus = {
+        '501': 'Not implemented',
+        '400': 'Bad request',
+        '500': 'Internel server error!!'
+    }
+    let response = `HTTP/1.1 ${statusCode} ${httpStatusMessages[statusCode]}
+    Connection: keep-alive
+    Content-Length: 0
+    Date: ${new Date()}
+    \r\n`
+    return response
 }
 
 function parseUrl(headers){
