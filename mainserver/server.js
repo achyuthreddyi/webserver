@@ -1,6 +1,7 @@
 const net = require('net');
 
 const servestaticfiles = require('./fileserve')
+const routeController = require('./routeController')
 const PORT = 8080;
 let headers = {}
 
@@ -11,7 +12,11 @@ const serverFun = {
     // defaultDirectory : 'staticfiles',
     defaultstatic : servestaticfiles,
     customStaticServe : customStaticServe,
-    serveDefaultStatic : serveDefaultStatic
+    serveDefaultStatic : serveDefaultStatic,
+    addGetRoute : addGetRoute,
+    addPostRoute : addPostRoute,
+    getRoutes :{},
+    postRoutes : {}
 }
 
 function createServer(PORT){   
@@ -28,7 +33,10 @@ function createServer(PORT){
         client.on('data',(data) =>{
 
             let parsedRequest = parseRequest(data)            
-            const res = servestaticfiles(parsedRequest, this.directory)            
+            const res =  //servestaticfiles(parsedRequest, this.directory) || 
+                routeController(parsedRequest.headers, this.getRoutes, this.postRoutes)  
+            console.log('response from handlers', res);
+
             client.write(res)
             client.end()
         })
@@ -68,10 +76,7 @@ function parseRequest (data){
         if(item.includes(':')){
             let headerKey = item.slice(0, item.indexOf(':'))
             if(headerKey.includes(' ')){
-                // let err_response = 'HTTP/1.1 400 Bad Request'
-                return sendErrorStatus(400)
-                // return err_response
-                // return 
+                return sendErrorStatus(400)              
             }else{
                 headers[item.slice(0,item.indexOf(':'))] = item.slice(item.indexOf(':') + 2)
             }
@@ -126,9 +131,24 @@ function customStaticServe(directory){
 function serveDefaultStatic(){
     this.directory = 'staticfiles'
 }
+function addGetRoute(path , controller ){
+    this.getRoutes[path] = controller
+
+}
+function addPostRoute(path , controller){
+    this.postRoutes[path] = controller
+}
 
 
 serverFun.createServer(PORT)
 // serverFun.serveDefaultStatic()
-serverFun.customStaticServe('public')
+// serverFun.customStaticServe('public')
+serverFun.addGetRoute('/achyuth',() =>{
+    console.log('workinhhhhh you idiot!!!');
+})
+serverFun.addPostRoute('/reddy', justchecking)
 
+
+ function justchecking(){
+     console.log("hey man");
+ }
