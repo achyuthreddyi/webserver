@@ -2,6 +2,7 @@ const net = require('net');
 
 const servestaticfiles = require('./fileserve')
 const routeController = require('./routeController')
+const bodyParser = require('./bodyParser')
 const PORT = 8080;
 let headers = {}
 
@@ -32,12 +33,14 @@ function createServer(PORT){
         })
         client.on('data',(data) =>{
 
-            let parsedRequest = parseRequest(data)            
-            const res =  //servestaticfiles(parsedRequest, this.directory) || 
-                routeController(parsedRequest.headers, this.getRoutes, this.postRoutes)  
-            console.log('response from handlers', res);
+            let parsedRequest = parseRequest(data)
+            parsedRequest = bodyParser(parsedRequest)
+            console.log('request after body parser');            
+            // const res =  //servestaticfiles(parsedRequest, this.directory) || 
+                // routeController(parsedRequest.headers, this.getRoutes, this.postRoutes)  
+            // console.log('response from handlers', res);
 
-            client.write(res)
+            // client.write(res)
             client.end()
         })
         client.on('end',() =>{

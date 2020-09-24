@@ -31,7 +31,8 @@ const servestaticfiles =  (reques,folder ) =>{
                 Content-Length: ${body.toString().length} 
                 \r\n\r\n`                   
         } catch {
-            body = fs.readFileSync(`./${folder}/404.html`);  
+            body = fs.readFileSync(`./${folder}/404.html`);
+            //  implement the error function!!!  
             responseHeader = `HTTP/1.1 404 OK
                 Content-Type : ${mimeType[path.slice(path.lastIndexOf('.'))]}
                 Connection : keep-alive
