@@ -10,7 +10,8 @@ const mimeType = {
     '.png':'image/png'
 }
 
-const servestaticfiles =  (headers, ) =>{    
+const servestaticfiles =  (headers ) =>{  
+    console.log(headers);  
     let res = ''    
     console.log('headers :::', headers['method-path-protocol'] );
     const [protocol, path, status ] = headers['method-path-protocol'].split(' ')
