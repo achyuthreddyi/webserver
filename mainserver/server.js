@@ -1,12 +1,17 @@
 const net = require('net');
-const { on } = require('process');
 
 const servestaticfiles = require('./fileserve')
 const PORT = 8080;
 let headers = {}
 
+
 const serverFun = {
     createServer : createServer,
+    directory:'',    
+    // defaultDirectory : 'staticfiles',
+    defaultstatic : servestaticfiles,
+    customStaticServe : customStaticServe,
+    serveDefaultStatic : serveDefaultStatic
 }
 
 function createServer(PORT){   
@@ -18,14 +23,12 @@ function createServer(PORT){
             console.log(err);
             console.log('error in connection !!!' );
             client.write(sendErrorStatus(500))
-            // client.write(`HTTP/1.1 500 server internal error`)
-            client.close()        
+            client.end()        
         })
         client.on('data',(data) =>{
-            let parsedRequest = parseRequest(data)
-            console.log('parsedRequest', parsedRequest);
-            servestaticfiles(parsedRequest)
-            console.log(res);
+
+            let parsedRequest = parseRequest(data)            
+            const res = servestaticfiles(parsedRequest, this.directory)            
             client.write(res)
             client.end()
         })
@@ -94,7 +97,7 @@ function sendErrorStatus(statusCode){
         '400': 'Bad request',
         '500': 'Internel server error!!'
     }
-    let response = `HTTP/1.1 ${statusCode} ${httpStatusMessages[statusCode]}
+    let response = `HTTP/1.1 ${statusCode} ${httpstatus[statusCode]}
     Connection: keep-alive
     Content-Length: 0
     Date: ${new Date()}
@@ -117,6 +120,15 @@ function parseUrl(headers){
     }
 }
 
+function customStaticServe(directory){
+    this.directory = directory
+}
+function serveDefaultStatic(){
+    this.directory = 'staticfiles'
+}
 
 
-serverFun.createServer(PORT);
+serverFun.createServer(PORT)
+// serverFun.serveDefaultStatic()
+serverFun.customStaticServe('public')
+
