@@ -1,6 +1,5 @@
 
 const  bodyParser = (req) =>{
-    console.log('coming here!!@#$@#$');
     const contentType = req['Content-Type']
     if(!req.body){
         return undefined

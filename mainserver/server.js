@@ -4,6 +4,8 @@ const servestaticfiles = require('./fileserve')
 const routeController = require('./routeController')
 const bodyParser = require('./bodyParser')
 const PORT = 8080;
+let pow = 0
+const middlewares = []
 let headers = {}
 
 
@@ -16,11 +18,12 @@ const serverFun = {
     serveDefaultStatic : serveDefaultStatic,
     addGetRoute : addGetRoute,
     addPostRoute : addPostRoute,
+    use : use,
     getRoutes :{},
     postRoutes : {}
 }
 
-function createServer(PORT){   
+  function createServer(  PORT ){   
     
     const server = net.createServer()
     server.on('connection',(client) =>{
@@ -33,15 +36,15 @@ function createServer(PORT){
         })
         client.on('data',(data) =>{
 
-            let parsedRequest = parseRequest(data)
-            parsedRequest = bodyParser(parsedRequest)
-            console.log('request after body parser');            
-            // const res =  //servestaticfiles(parsedRequest, this.directory) || 
-                // routeController(parsedRequest.headers, this.getRoutes, this.postRoutes)  
-            // console.log('response from handlers', res);
+            let parsedRequest =  parseRequest(data)
+            
+             routeController(parsedRequest, this.getRoutes, this.postRoutes, middlewares, client )
 
-            // client.write(res)
-            client.end()
+                // const res =  servestaticfiles(parsedRequest, this.directory)
+
+                // client.write(res)
+                // client.end()
+       
         })
         client.on('end',() =>{
             console.log('client has sent the fin packets');
@@ -53,7 +56,7 @@ function createServer(PORT){
 server.listen(PORT,() =>{console.log("server working on ",PORT)})
 }
  
-function parseRequest (data){
+ function parseRequest (data){
 
     let request = {}
     let [headerData, bodyData] = data.toString().split('\r\n\r\n')
@@ -135,23 +138,19 @@ function serveDefaultStatic(){
     this.directory = 'staticfiles'
 }
 function addGetRoute(path , controller ){
+    pow += 1
     this.getRoutes[path] = controller
 
 }
 function addPostRoute(path , controller){
+    pow += 1
     this.postRoutes[path] = controller
 }
 
+function use(middleware){
+    middlewares.push(middleware)
+} 
 
-serverFun.createServer(PORT)
-// serverFun.serveDefaultStatic()
-// serverFun.customStaticServe('public')
-serverFun.addGetRoute('/achyuth',() =>{
-    console.log('workinhhhhh you idiot!!!');
-})
-serverFun.addPostRoute('/reddy', justchecking)
+ console.log(middlewares);
 
-
- function justchecking(){
-     console.log("hey man");
- }
+ module.exports = serverFun

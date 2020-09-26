@@ -10,7 +10,8 @@ const mimeType = {
     '.png':'image/png'
 }
 
-const servestaticfiles =  (reques,folder ) =>{  
+const servestaticfiles =  (reques,folder ) =>{ 
+    console.log('request', reques); 
     console.log('Folder',folder);
     console.log("headers first here ", reques['headers'].url); 
     let path = reques['headers'].url 
@@ -64,7 +65,7 @@ const servestaticfiles =  (reques,folder ) =>{
                     \r\n\r\n`
             let response = Buffer.concat([Buffer.from(responseHeader),body])    
             return response
-            }
+            } //else return null
             
         }      
                  
