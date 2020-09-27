@@ -2,9 +2,8 @@ const net = require('net');
 
 const servestaticfiles = require('./fileserve')
 const routeController = require('./routeController')
-const bodyParser = require('./bodyParser')
 const PORT = 8080;
-let pow = 0
+
 const middlewares = []
 let headers = {}
 
@@ -40,7 +39,7 @@ const serverFun = {
             
              routeController(parsedRequest, this.getRoutes, this.postRoutes, middlewares, client )
 
-                // const res =  servestaticfiles(parsedRequest, this.directory)
+                // const res =  servestaticfiles(parsedRequest, this.directory) ||
 
                 // client.write(res)
                 // client.end()
@@ -138,16 +137,17 @@ function serveDefaultStatic(){
     this.directory = 'staticfiles'
 }
 function addGetRoute(path , controller ){
-    pow += 1
+    
     this.getRoutes[path] = controller
 
 }
 function addPostRoute(path , controller){
-    pow += 1
+   
     this.postRoutes[path] = controller
 }
 
 function use(middleware){
+    console.log("in middleware", middleware);
     middlewares.push(middleware)
 } 
 

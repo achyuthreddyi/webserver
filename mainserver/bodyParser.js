@@ -2,7 +2,7 @@
 const  bodyParser = (req) =>{
     const contentType = req['Content-Type']
     if(!req.body){
-        return undefined
+        return req
     }
     console.log('before', req.body);
     switch (contentType){
