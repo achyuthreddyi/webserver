@@ -30,20 +30,13 @@ const serverFun = {
         client.on('error', (err) =>{  
             console.log(err);
             console.log('error in connection !!!' );
-            client.write(sendErrorStatus(500))
-            client.end()        
+            client.write(sendErrorStatus(500), function(err) { client.end() })
         })
         client.on('data',(data) =>{
+            let parsedRequest =  parseRequest(data)            
+            res = servestaticfiles(parsedRequest, this.directory,);client.write(res, function(err) { client.end() })
+            routeController(parsedRequest, this.getRoutes, this.postRoutes, middlewares, client )       
 
-            let parsedRequest =  parseRequest(data)
-            
-             routeController(parsedRequest, this.getRoutes, this.postRoutes, middlewares, client )
-
-                // const res =  servestaticfiles(parsedRequest, this.directory) ||
-
-                // client.write(res)
-                // client.end()
-       
         })
         client.on('end',() =>{
             console.log('client has sent the fin packets');
@@ -56,13 +49,9 @@ server.listen(PORT,() =>{console.log("server working on ",PORT)})
 }
  
  function parseRequest (data){
-
     let request = {}
     let [headerData, bodyData] = data.toString().split('\r\n\r\n')
-    // var headers = {}
-
     headerData = headerData.split('\r\n')
-
     let method_path_protocol = headerData[0].split(' ')
     if(method_path_protocol.length >3){
         let err_response = sendErrorStatus(400)
@@ -72,11 +61,8 @@ server.listen(PORT,() =>{console.log("server working on ",PORT)})
     headers['method'] = method_path_protocol[0]
     headers['url'] = method_path_protocol[1]
     headers['http-version'] = method_path_protocol[2]
-
     parseUrl(headers)
-
     headerData = headerData.slice(1)
-
     for(let item of headerData){
         if(item.includes(':')){
             let headerKey = item.slice(0, item.indexOf(':'))
@@ -141,8 +127,7 @@ function addGetRoute(path , controller ){
     this.getRoutes[path] = controller
 
 }
-function addPostRoute(path , controller){
-   
+function addPostRoute(path , controller){   
     this.postRoutes[path] = controller
 }
 

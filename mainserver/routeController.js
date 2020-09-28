@@ -1,6 +1,5 @@
 const fs = require('fs');
 const bodyParser = require('./bodyParser');
-// const response = require('./response')
 
 const mimeType = {
     '.html' : 'text/html',
@@ -13,10 +12,7 @@ const mimeType = {
     '.png' : 'image/png'
   }
 
-
 const routeController = async (request, getRoutes, postRoutes,middlewares,client) =>{
-
-
     const response = {
     send : send,
     json : json,
@@ -46,28 +42,13 @@ const routeController = async (request, getRoutes, postRoutes,middlewares,client
         resp += `Date: ${date.toUTCString()}\r\n`
         resp += 'Content-Type: *\r\n'
     
-        client.write(Buffer.from(resp))
-      return this
+        client.write(Buffer.from(resp), function(err) { client.end() })
+        // client.end()
+    
     }
 
     function json(body2){
-        console.log("in json method!!",body2);
-        const body = JSON.parse(body2.toString())
-        let responseHeaders =
-        `HTTP/1.1 200 OK
-        Content-Type: ${mimeType[path.slice(path.lastIndexOf('.'))]}
-        Connection: keep-alive
-        Content-Length: ${body.length}
-        Date: ${new Date().toUTCString()}
-        \r\n\r\n`
-        client.write(Buffer.from(responseHeaders + body))
-    }    
-
-    function send(body1) {
-        // console.log("body in send method",body1);
-        body1 = JSON.stringify(body1)
-        // body1 += '\r\n\r\n'
-        const body = body1
+        const body = JSON.stringify(body2);       
         let responseHeaders =
             `HTTP/1.1 200 OK
             Content-Type: ${mimeType[path.slice(path.lastIndexOf('.'))]}
@@ -75,12 +56,37 @@ const routeController = async (request, getRoutes, postRoutes,middlewares,client
             Content-Length: ${body.length}
             Date: ${new Date().toUTCString()}
             \r\n\r\n`
+        client.write(Buffer.from(responseHeaders + body), function(err) { client.end() })
+        // client.end()
+    }    
 
-    console.log("before");
-    client.write(Buffer.from(responseHeaders + body + '\r\n'))
-    client.end()
-    console.log("after");
-      }
+    function send(controller) {        
+        const body = JSON.stringify(controller)        
+        let responseHeaders =
+            `HTTP/1.1 200 OK
+            Content-Type: ${mimeType[path.slice(path.lastIndexOf('.'))]}
+            Connection: keep-alive
+            Content-Length: ${body.length}
+            Date: ${new Date().toUTCString()}
+            \r\n\r\n`
+        client.write(Buffer.from(responseHeaders + body + '\r\n'), function(err) { client.end() })
+        // client.end()
+    }
 }
 
 module.exports = routeController
+
+
+
+
+function statusHeader(statusCode){
+    const httpStatus = {
+        '200':'OK',
+        '400': 'Bad request',
+    }
+    let responseHeader = `HTTP/1.1 ${statusCode} ${httpStatus[statusCode]}
+    Connection: keep-alive    
+    Date: ${new Date()}
+    \r\n`
+    return responseHeader
+}
